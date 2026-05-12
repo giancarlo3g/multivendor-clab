@@ -1,0 +1,140 @@
+{
+  "freeTextAnnotations": [],
+  "freeShapeAnnotations": [],
+  "trafficRateAnnotations": [],
+  "groupStyleAnnotations": [],
+  "networkNodeAnnotations": [],
+  "nodeAnnotations": [
+    {
+      "id": "ptx-gw",
+      "position": {
+        "x": 380,
+        "y": 280
+      },
+      "icon": "router",
+      "interfacePattern": "e1-{n}"
+    },
+    {
+      "id": "srl3",
+      "position": {
+        "x": 320,
+        "y": 480
+      },
+      "icon": "router",
+      "interfacePattern": "e1-{n}"
+    },
+    {
+      "id": "sros",
+      "position": {
+        "x": 260,
+        "y": 280
+      },
+      "icon": "pe",
+      "interfacePattern": "1/1/c{n}/1",
+      "geoCoordinates": {
+        "lat": 48.775846,
+        "lng": 9.182932
+      }
+    },
+    {
+      "id": "vmx",
+      "position": {
+        "x": 360,
+        "y": 280
+      },
+      "icon": "pe",
+      "geoCoordinates": {
+        "lat": 50.110924,
+        "lng": 8.682127
+      }
+    },
+    {
+      "id": "srl",
+      "position": {
+        "x": 200,
+        "y": 500
+      },
+      "icon": "switch",
+      "interfacePattern": "e1-{n}",
+      "geoCoordinates": {
+        "lat": 48.856613,
+        "lng": 2.352222
+      }
+    },
+    {
+      "id": "ceos",
+      "position": {
+        "x": 340,
+        "y": 500
+      },
+      "icon": "switch",
+      "geoCoordinates": {
+        "lat": 51.507351,
+        "lng": -0.127758
+      }
+    },
+    {
+      "id": "ptx",
+      "position": {
+        "x": 460,
+        "y": 500
+      },
+      "icon": "switch",
+      "geoCoordinates": {
+        "lat": 51.507351,
+        "lng": 2.672242
+      }
+    },
+    {
+      "id": "client-1",
+      "position": {
+        "x": 200,
+        "y": 620
+      },
+      "icon": "client",
+      "geoCoordinates": {
+        "lat": 48.775846,
+        "lng": 11.982932
+      }
+    },
+    {
+      "id": "client-2",
+      "position": {
+        "x": 340,
+        "y": 620
+      },
+      "icon": "client",
+      "geoCoordinates": {
+        "lat": 50.110924,
+        "lng": 11.482127
+      }
+    },
+    {
+      "id": "client-3",
+      "position": {
+        "x": 460,
+        "y": 620
+      },
+      "icon": "client",
+      "geoCoordinates": {
+        "lat": 48.856613,
+        "lng": 5.152222
+      }
+    }
+  ],
+  "edgeAnnotations": [],
+  "aliasEndpointAnnotations": [],
+  "viewerSettings": {
+    "style": "default",
+    "linkLabelMode": "show-all",
+    "lastNonTelemetryLinkLabelMode": "show-all",
+    "telemetryNodeSizePx": 40,
+    "telemetryInterfaceSizePercent": 100,
+    "showRateLabels": false,
+    "autoCreateTrafficRateAnnotations": false,
+    "gridLineWidth": 0.00001,
+    "gridStyle": "dotted",
+    "gridColor": null,
+    "gridBgColor": null
+  }
+}

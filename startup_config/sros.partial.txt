@@ -1,0 +1,51 @@
+configure card 1 card-type iom-1
+configure card 1 mda 1 mda-type me6-100gb-qsfp28
+configure card 1 mda 2 mda-type me12-100gb-qsfp28
+configure { card 1 mda 2 }
+configure { card 1 fp 1 }
+configure port 1/1/c1 admin-state enable
+configure port 1/1/c1 connector breakout c1-100g
+configure port 1/1/c1/1 admin-state enable
+configure port 1/1/c1/1 ethernet mode hybrid
+configure port 1/1/c2/1 ethernet mtu 9212
+configure port 1/1/c2 admin-state enable
+configure port 1/1/c2 connector breakout c1-100g
+configure port 1/1/c2/1 admin-state enable
+configure port 1/1/c1/1 ethernet mode hybrid
+configure port 1/1/c1/1 ethernet mtu 9212
+configure port 1/1/c3 admin-state enable
+configure port 1/1/c3 connector breakout c1-100g
+configure port 1/1/c3/1 admin-state enable
+configure port 1/1/c3/1 ethernet mode hybrid
+configure router "Base" autonomous-system 65000
+configure router "Base" router-id 192.1.2.1
+configure router "Base" interface "system" ipv4 primary address 192.1.2.1
+configure router "Base" interface "system" ipv4 primary prefix-length 32
+configure router "Base" interface "to_ceos" port 1/1/c2/1:1
+configure router "Base" interface "to_ceos" ipv4 primary address 101.1.2.1
+configure router "Base" interface "to_ceos" ipv4 primary prefix-length 31
+configure router "Base" interface "to_srl" port 1/1/c1/1:1
+configure router "Base" interface "to_srl" ipv4 primary address 101.1.1.1
+configure router "Base" interface "to_srl" ipv4 primary prefix-length 31
+configure router "Base" interface "to_vqfx" port 1/1/c3/1:1
+configure router "Base" interface "to_vqfx" ipv4 primary address 101.1.3.1
+configure router "Base" interface "to_vqfx" ipv4 primary prefix-length 31
+configure router "Base" bgp admin-state enable
+configure router "Base" bgp router-id 192.1.2.1
+configure router "Base" bgp group "iBGP-evpn" peer-as 65000
+configure router "Base" bgp group "iBGP-evpn" family ipv4 false
+configure router "Base" bgp group "iBGP-evpn" family ipv6 false
+configure router "Base" bgp group "iBGP-evpn" family evpn true
+configure router "Base" bgp group "iBGP-evpn" cluster cluster-id 192.1.2.1
+configure router "Base" bgp neighbor "192.1.1.1" group "iBGP-evpn"
+configure router "Base" bgp neighbor "192.1.1.2" group "iBGP-evpn"
+configure router "Base" bgp neighbor "192.1.1.3" group "iBGP-evpn"
+configure router "Base" ospf 0 admin-state enable
+configure router "Base" ospf 0 area 0.0.0.0 interface "system" admin-state enable
+configure router "Base" ospf 0 area 0.0.0.0 interface "to_ceos" admin-state enable
+configure router "Base" ospf 0 area 0.0.0.0 interface "to_ceos" interface-type point-to-point
+configure router "Base" ospf 0 area 0.0.0.0 interface "to_srl" admin-state enable
+configure router "Base" ospf 0 area 0.0.0.0 interface "to_srl" interface-type point-to-point
+configure router "Base" ospf 0 area 0.0.0.0 interface "to_vqfx" admin-state enable
+configure router "Base" ospf 0 area 0.0.0.0 interface "to_vqfx" interface-type point-to-point
+configure router "Base" ospf 0 area 0.0.0.0 interface "to_vqfx" mtu 9172

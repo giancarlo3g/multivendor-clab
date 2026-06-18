@@ -1,0 +1,59 @@
+# configure interfaces
+sudo config interface ip add Ethernet0 101.1.4.0/31
+sudo config interface mtu Ethernet0 9172
+sudo config interface ip add Ethernet4 101.1.4.2/31
+sudo config interface mtu Ethernet4 9172
+sudo config interface ip add Loopback0 192.1.1.4/32
+
+# enable ospfd in FRR (container within sonic-vm)
+ssh mv-sonic
+docker exec -it bgp bash
+
+cat >> /etc/supervisor/conf.d/supervisord.conf << 'EOF'
+
+[program:ospfd]
+command=/usr/lib/frr/ospfd -A 127.0.0.1
+priority=4
+autostart=true
+autorestart=false
+startsecs=0
+stdout_logfile=NONE
+stdout_syslog=true
+stderr_logfile=NONE
+stderr_syslog=true
+dependent_startup=true
+dependent_startup_wait_for=zebra:running
+EOF
+
+supervisorctl reread
+supervisorctl update
+supervisorctl start ospfd
+supervisorctl status ospfd
+exit
+
+sudo config save -y
+
+## ospf configuration
+vtysh
+configure
+ router ospf
+  ospf router-id 192.1.1.4
+  network 101.1.4.0/31 area 0
+  network 101.1.4.2/31 area 0
+ exit
+ interface Ethernet0
+  ip ospf network point-to-point
+ exit
+ interface Ethernet1
+  ip ospf network point-to-point
+ exit
+exit
+write memory
+
+# useful commands
+cat /usr/share/sonic/device/x86_64-kvm_x86_64-r0/Force10-S6000/port_config.ini
+show interfaces status
+show ip interfaces
+sudo config save -y
+show ip ospf neighbor
+clear ip ospf process

@@ -9,22 +9,26 @@ topology:
       image: nokia_srsim:25.10.R2
       license: ../license-srsim25.txt
     arista_ceos:
-      image: arista_ceos:4.34.2F  
-    juniper_vjunosrouter:
-      image: juniper_vjunos-router:25.4R1.12
+      image: arista_ceos:4.34.2F
     juniper_cjunosevolved:
       image: juniper_cjunosevolved:25.4R1.13-EVO
     linux:
       image: ghcr.io/hellt/network-multitool:latest
+    sonic-vs:
+      image: docker-sonic-vs:latest
+    sonic-vm:
+      image: sonic_sonic-vs:2026
 
   nodes:
     sros:
       kind: nokia_srsim
+      type: sr-1
       group: spine
       startup-config: ./startup_config/sros.partial.txt
     ptx-gw:
       kind: juniper_cjunosevolved
       group: spine
+      # startup-config: ./startup_config/ptxgw.cfg
     srl:
       kind: nokia_srlinux
       group: leaf
@@ -32,7 +36,7 @@ topology:
     ceos:
       kind: arista_ceos
       group: leaf
-      startup-config: ./startup_config/ceos.partial.txt
+      # startup-config: ./startup_config/ceos.partial.txt
     ptx:
       kind: juniper_cjunosevolved
       group: leaf
@@ -60,16 +64,30 @@ topology:
         - ip link set eth1.10 address 00:c1:ab:0:00:03
         - ip a add 192.168.10.13/24 dev eth1.10
       group: server
+    sonic:
+      kind: sonic-vm
+      binds:
+        - ./startup_config/sonic.json:/config/config_db.json
+        # - ./startup_config/daemons:/config/frr/daemons
+    client-4:
+      kind: linux
+      exec:
+        - ip link add link eth1 name eth1.10 type vlan id 10
+        - ip link set dev eth1.10 up
+        - ip link set eth1.10 address 00:c1:ab:0:00:04
+        - ip a add 192.168.10.14/24 dev eth1.10
 
   links:
     ##CLOS fabric
     - endpoints: [ "sros:1/1/c1/1", "srl:e1-2" ]
     - endpoints: [ "sros:1/1/c2/1", "ceos:eth2" ]
-    - endpoints: [ "sros:1/1/c3/1", "ptx:eth2" ]
-    - endpoints: [ "ptx-gw:eth1", "srl:e1-3" ]
-    - endpoints: [ "ptx-gw:eth2", "ceos:eth3" ]
-    - endpoints: [ "ptx-gw:eth3", "ptx:eth3" ]
-      ##CE
+    - endpoints: [ "sros:1/1/c3/1", "ptx:eth4" ]
+    - endpoints: [ "ptx-gw:eth4", "srl:e1-3" ]
+    - endpoints: [ "ptx-gw:eth5", "ceos:eth3" ]
+    - endpoints: [ "ptx-gw:eth6", "ptx:eth5" ]
     - endpoints: [ "client-1:eth1", "srl:e1-1" ]
     - endpoints: [ "client-2:eth1", "ceos:eth1" ]
-    - endpoints: [ "client-3:eth1", "ptx:eth1" ]
+    - endpoints: [ "client-3:eth1", "ptx:eth6" ]
+    - endpoints: [ "sonic:eth1", "sros:1/1/c4/1" ]
+    - endpoints: [ "sonic:eth2", "ptx-gw:eth7" ]
+    - endpoints: [ "client-4:eth1", "sonic:eth3" ]

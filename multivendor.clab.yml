@@ -40,6 +40,7 @@ topology:
     ptx:
       kind: juniper_cjunosevolved
       group: leaf
+      # startup-config: ./startup_config/ptx.cfg
     client-1:
       kind: linux
       exec:

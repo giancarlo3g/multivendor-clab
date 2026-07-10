@@ -68,6 +68,7 @@ router ospf
 ospf router-id 192.1.1.4
 network 101.1.4.0/31 area 0
 network 101.1.4.2/31 area 0
+network 192.1.1.4/32 area 0
 exit
 exit
 write memory
@@ -76,5 +77,27 @@ REMOTE_EOF
 
 echo ">>> Verifying OSPF neighbor state on ${NODE}"
 ssh "${NODE}" "docker exec bgp vtysh -c 'show ip ospf neighbor'"
+
+echo ">>> Applying BGP configuration via vtysh on ${NODE}"
+ssh "${NODE}" bash -s << 'REMOTE_EOF'
+vtysh << 'VTYSH_EOF'
+configure
+no router bgp 65100
+router bgp 65000
+neighbor 192.1.2.1 remote-as 65000
+neighbor 192.1.2.2 remote-as 65000
+address-family l2vpn evpn
+neighbor 192.1.2.1 activate
+neighbor 192.1.2.2 activate
+advertise-all-vni
+exit
+exit
+exit
+write memory
+VTYSH_EOF
+REMOTE_EOF
+
+echo ">>> Verifying BGP neighbor state on ${NODE}"
+ssh "${NODE}" "docker exec bgp vtysh -c 'show bgp summary'"
 
 echo ">>> Done with ${NODE}"

@@ -8,17 +8,17 @@
     {
       "id": "ptx-gw",
       "position": {
-        "x": 380,
-        "y": 280
+        "x": 520,
+        "y": 300
       },
       "icon": "router",
       "interfacePattern": "e1-{n}"
     },
     {
-      "id": "srl3",
+      "id": "frr",
       "position": {
-        "x": 320,
-        "y": 480
+        "x": 680,
+        "y": 500
       },
       "icon": "router",
       "interfacePattern": "e1-{n}"
@@ -26,8 +26,8 @@
     {
       "id": "sros",
       "position": {
-        "x": 260,
-        "y": 280
+        "x": 360,
+        "y": 300
       },
       "icon": "pe",
       "interfacePattern": "1/1/c{n}/1",
@@ -138,6 +138,14 @@
       },
       "icon": "client",
       "interfacePattern": "e1-{n}"
+    },
+    {
+      "id": "client-5",
+      "position": {
+        "x": 680,
+        "y": 620
+      },
+      "icon": "client"
     }
   ],
   "edgeAnnotations": [],

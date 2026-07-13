@@ -77,6 +77,19 @@ topology:
         - ip link set dev eth1.10 up
         - ip link set eth1.10 address 00:c1:ab:0:00:04
         - ip a add 192.168.10.14/24 dev eth1.10
+    frr:
+      kind: linux
+      image: frrouting/frr:latest
+      binds:
+        - startup_config/frr.conf:/etc/frr/frr.conf
+        - startup_config/frr_daemons:/etc/frr/daemons
+    client-5:
+      kind: linux
+      exec:
+        - ip link add link eth1 name eth1.10 type vlan id 10
+        - ip link set dev eth1.10 up
+        - ip link set eth1.10 address 00:c1:ab:0:00:05
+        - ip a add 192.168.10.15/24 dev eth1.10
 
   links:
     ##CLOS fabric
@@ -91,4 +104,21 @@ topology:
     - endpoints: [ "client-3:eth1", "ptx:eth6" ]
     - endpoints: [ "sonic:eth1", "sros:1/1/c4/1" ]
     - endpoints: [ "sonic:eth2", "ptx-gw:eth7" ]
+    # - endpoints: [ "frr:eth1", "sros:1/1/c5/1" ]
+    # - endpoints: [ "frr:eth2", "ptx-gw:eth8" ]
     - endpoints: [ "client-4:eth1", "sonic:eth3" ]
+    - endpoints: [ "client-5:eth1", "frr:eth3" ]
+    - type: veth
+      endpoints:
+        - node: frr
+          interface: eth1
+        - node: sros
+          interface: 1/1/c5/1
+      mtu: 9172
+    - type: veth
+      endpoints:
+        - node: frr
+          interface: eth2
+        - node: ptx-gw
+          interface: eth8
+      mtu: 9172

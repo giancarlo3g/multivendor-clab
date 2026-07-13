@@ -23,6 +23,12 @@
 /configure port 1/1/c4/1 ethernet mode network
 /configure port 1/1/c4/1 ethernet encap-type null
 /configure port 1/1/c4/1 ethernet mtu 9212
+/configure port 1/1/c5 admin-state enable
+/configure port 1/1/c5 connector breakout c1-100g
+/configure port 1/1/c5/1 admin-state enable
+/configure port 1/1/c5/1 ethernet mode network
+/configure port 1/1/c5/1 ethernet encap-type null
+/configure port 1/1/c5/1 ethernet mtu 9212
 
 /configure router autonomous-system 65000
 /configure router router-id 192.1.2.1
@@ -40,6 +46,9 @@
 /configure router "Base" interface "to_sonic" port 1/1/c4/1
 /configure router "Base" interface "to_sonic" ipv4 primary address 101.1.4.1
 /configure router "Base" interface "to_sonic" ipv4 primary prefix-length 31
+/configure router "Base" interface "to_frr" port 1/1/c5/1
+/configure router "Base" interface "to_frr" ipv4 primary address 101.1.5.1
+/configure router "Base" interface "to_frr" ipv4 primary prefix-length 31
 /configure router bgp admin-state enable
 /configure router bgp router-id 192.1.2.1
 /configure router bgp group "iBGP-evpn" peer-as 65000
@@ -51,6 +60,10 @@
 /configure router bgp neighbor "192.1.1.2" group "iBGP-evpn"
 /configure router bgp neighbor "192.1.1.3" group "iBGP-evpn"
 /configure router bgp neighbor "192.1.1.4" group "iBGP-evpn"
+/configure router bgp neighbor "192.1.1.1" group "iBGP-evpn"
+/configure router bgp neighbor "192.1.1.2" group "iBGP-evpn"
+/configure router bgp neighbor "192.1.1.3" group "iBGP-evpn"
+/configure router bgp neighbor "192.1.1.5" group "iBGP-evpn"
 /configure router ospf 0 admin-state enable
 /configure router ospf 0 area 0.0.0.0 interface "system" admin-state enable
 /configure router ospf 0 area 0.0.0.0 interface "to_ceos" admin-state enable
@@ -63,3 +76,6 @@
 /configure router ospf 0 area 0.0.0.0 interface "to_sonic" admin-state enable
 /configure router ospf 0 area 0.0.0.0 interface "to_sonic" interface-type point-to-point
 /configure router ospf 0 area 0.0.0.0 interface "to_sonic" mtu 9172
+/configure router ospf 0 area 0.0.0.0 interface "to_frr" admin-state enable
+/configure router ospf 0 area 0.0.0.0 interface "to_frr" interface-type point-to-point
+/configure router ospf 0 area 0.0.0.0 interface "to_frr" mtu 9172

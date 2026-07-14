@@ -1,0 +1,72 @@
+# Useful Junos show commands
+
+  13:07:54 -- configure 
+  13:23:53 -- show ethernet-switching table instance EVPN-VXLAN10 extensive 
+  13:24:50 -- show route table EVPN-VXLAN10.evpn.0 
+  13:39:56 -- show ethernet-switching vxlan-tunnel-end-point remote 
+  13:40:32 -- show interfaces et-0/0/2.10 extensive | match "error|drop|discard" 
+  13:40:37 -- show pfe statistics exceptions 
+  13:40:43 -- show pfe statistics traffic 
+  13:41:07 -- show configuration firewall 
+  13:41:12 -- show interfaces lo0 extensive | match filter 
+  13:44:27 -- show route forwarding-table family evpn extensive | find 00:c1:ab:00:00:03 
+  13:44:35 -- show route forwarding-table family evpn extensive 
+  13:44:43 -- show route forwarding-table vpn EVPN-VXLAN10 extensive | match "et-0/0/2|Next-hop" 
+  13:45:31 -- show route forwarding-table vlan 10 
+  13:45:45 -- show route forwarding-table family ethernet-switching all 
+  13:45:50 -- show route forwarding-table family ethernet-switching extensive 
+  13:46:03 -- show route forwarding-table all 
+  13:46:33 -- show route forwarding-table table EVPN-VXLAN10.vpls 
+  13:46:38 -- show route forwarding-table all 
+  13:47:09 -- show ethernet-switching interface et-0/0/2.10 extensive 
+  13:47:13 -- show ethernet-switching interfaces
+  13:47:24 -- show evpn arp-table instance EVPN-VXLAN10 
+  13:48:43 -- show route forwarding-table family vpls table EVPN-VXLAN10 
+  13:48:59 -- show route forwarding-table family vpls table EVPN-VXLAN10 extensive 
+  13:49:18 -- clear interfaces statistics et-0/0/2.10 
+  13:49:24 -- show interfaces et-0/0/2.10 statistics detail 
+  13:49:47 -- show ethernet-switching interface et-0/0/2.10 extensive 
+  13:50:00 -- show ethernet-switching interface 
+  13:50:08 -- show evpn arp-table instance EVPN-VXLAN10 
+  13:51:15 -- show route forwarding-table extensive 
+  13:53:09 -- show route forwarding-table extensive destination 11033 
+  13:59:16 -- show evpn instance EVPN-VXLAN10 extensive 
+  14:01:21 -- show evpn instance EVPN-VXLAN10 extensive 
+  14:04:00 -- show interfaces vtep.32770 extensive 
+  14:04:32 -- show system statistics udp | match "4789|no port|checksum" 
+  14:04:44 -- show interfaces et-0/0/0.1 extensive | match "RPF|rpf" 
+  14:04:49 -- show interfaces et-0/0/1.1 extensive | match "RPF|rpf" 
+  14:04:53 -- show configuration interfaces et-0/0/0.1 
+  14:05:00 -- show configuration interfaces et-0/0/1.1 
+  14:08:38 -- clear interfaces statistics et-0/0/0.1 
+  14:08:38 -- clear interfaces statistics et-0/0/1.1 
+  14:08:43 -- show interfaces et-0/0/0.1 statistics detail 
+  14:08:43 -- show interfaces et-0/0/1.1 statistics detail 
+  14:08:56 -- show configuration | display set | match unicast-reverse-path 
+  14:08:57 -- show configuration forwarding-options 
+  14:10:24 -- show route table :vxlan.inet extensive 
+  14:11:04 -- show configuration routing-instances EVPN-VXLAN10 vlans vlan10 
+  14:13:47 -- show configuration routing-instances EVPN-VXLAN10 vlans vlan10 
+  14:14:06 -- clear interfaces statistics et-0/0/2.10 
+  14:14:09 -- show interfaces et-0/0/2.10 statistics detail 
+  14:14:23 -- show log evpn-trace.log | last 50 
+  14:14:42 -- show log l2ald-trace.log | last 50 
+  14:16:10 -- show configuration routing-instances EVPN-VXLAN10 
+  14:17:35 -- show configuration interfaces et-0/0/2 
+  14:26:46 -- show configuration interfaces et-0/0/2 
+  14:26:51 -- show configuration routing-instances EVPN-VXLAN10 
+  14:27:48 -- show interfaces et-0/0/2.0 terse 
+  14:27:50 -- show evpn instance EVPN-VXLAN10 extensive 
+  14:27:55 -- show ethernet-switching table instance EVPN-VXLAN10 extensive 
+  14:27:59 -- clear interfaces statistics et-0/0/2.0 
+  14:28:02 -- show interfaces et-0/0/2.0 statistics detail 
+  14:28:07 -- show route forwarding-table family vpls table EVPN-VXLAN10 extensive 
+  14:43:37 -- show system uptime 
+  14:45:34 -- show cli history 500 
+
+
+run show bgp summary 
+run show mac-vrf forwarding vxlan-tunnel-end-point remote 
+run show mac-vrf forwarding interface et-0/0/2 
+run show mac-vrf forwarding mac-ip-table instance EVPN-VXLAN10 
+run show evpn database instance EVPN-VXLAN10 

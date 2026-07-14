@@ -104,8 +104,6 @@ topology:
     - endpoints: [ "client-3:eth1", "ptx:eth6" ]
     - endpoints: [ "sonic:eth1", "sros:1/1/c4/1" ]
     - endpoints: [ "sonic:eth2", "ptx-gw:eth7" ]
-    # - endpoints: [ "frr:eth1", "sros:1/1/c5/1" ]
-    # - endpoints: [ "frr:eth2", "ptx-gw:eth8" ]
     - endpoints: [ "client-4:eth1", "sonic:eth3" ]
     - endpoints: [ "client-5:eth1", "frr:eth3" ]
     - type: veth

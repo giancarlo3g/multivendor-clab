@@ -28,7 +28,7 @@ topology:
     ptx-gw:
       kind: juniper_cjunosevolved
       group: spine
-      # startup-config: ./startup_config/ptxgw.cfg
+      startup-config: ./startup_config/ptxgw_startup.cfg
     srl:
       kind: nokia_srlinux
       group: leaf
@@ -36,11 +36,11 @@ topology:
     ceos:
       kind: arista_ceos
       group: leaf
-      # startup-config: ./startup_config/ceos.partial.txt
+      startup-config: ./startup_config/ceos_startup.cfg
     ptx:
       kind: juniper_cjunosevolved
       group: leaf
-      # startup-config: ./startup_config/ptx.cfg
+      startup-config: ./startup_config/ptx_startup.cfg
     client-1:
       kind: linux
       exec:
@@ -69,7 +69,7 @@ topology:
       kind: sonic-vm
       binds:
         - ./startup_config/sonic.json:/config/config_db.json
-        # - ./startup_config/daemons:/config/frr/daemons
+        - ./startup_config/frr_daemons:/config/frr/daemons
     client-4:
       kind: linux
       exec:
@@ -79,7 +79,7 @@ topology:
         - ip a add 192.168.10.14/24 dev eth1.10
     frr:
       kind: linux
-      image: frrouting/frr:latest
+      image: frr:alpine-51a087ebe9
       binds:
         - startup_config/frr.conf:/etc/frr/frr.conf
         - startup_config/frr_daemons:/etc/frr/daemons

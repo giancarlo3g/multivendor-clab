@@ -46,11 +46,16 @@ router bgp 65000
    neighbor 192.1.2.1 peer group iBGP-evpn
    neighbor 192.1.2.2 peer group iBGP-evpn
    !
-   vlan-aware-bundle VLAN-BUNDLE
+   ! vlan-aware-bundle VLAN-BUNDLE
+   !    rd 10:2
+   !    route-target both 65000:10
+   !    redistribute learned
+   !    vlan 10
+   ! !
+   vlan 10
       rd 10:2
       route-target both 65000:10
       redistribute learned
-      vlan 10
    !
    address-family evpn
       neighbor iBGP-evpn activate

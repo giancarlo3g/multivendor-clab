@@ -1,0 +1,63 @@
+# mv-frr VLAN-based EVPN/VXLAN commands for VLAN 10 / VNI 1010
+# Client-5 is connected on eth3 and should reach the other clients over the VXLAN overlay.
+# Loopback IP on mv-frr is 192.1.1.5.
+
+# 0) Remove any stale bridge/VXLAN state from a previous attempt
+ip link set dev eth3 nomaster 2>/dev/null || true
+ip link del dev vxlan10 2>/dev/null || true
+ip link del dev br10 2>/dev/null || true
+ip link del dev vlan10 2>/dev/null || true
+
+# 1) Create a VLAN-filtering bridge
+ip link add br10 type bridge stp_state 0 vlan_filtering 1
+
+# 2) Create the VXLAN device in external-control mode for a single VNI
+#    FRR owns the EVPN control plane; Linux just needs the local port mapping.
+ip link add vxlan10 type vxlan dstport 4789 external vnifilter local 192.1.1.5
+
+# 3) Attach the VXLAN device to the bridge and keep the bridge ports clean
+ip link set dev br10 addrgenmode none
+ip link set dev vxlan10 addrgenmode none master br10
+ip link set dev eth3 master br10
+
+# 4) Bring interfaces up
+ip link set dev br10 up
+ip link set dev vxlan10 up
+ip link set dev eth3 up
+
+# 5) Enable VLAN-tunnel mode on the VXLAN port and disable local learning
+#    so EVPN-controlled MAC learning is used instead of Linux bridge learning.
+bridge link set dev vxlan10 vlan_tunnel on neigh_suppress on learning off
+
+# 6) Port membership for VLAN 10 on the access side
+bridge vlan del dev eth3 vid 1
+bridge vlan add dev eth3 vid 10
+
+# 7) Bridge self VLAN membership
+bridge vlan del dev br10 vid 1 self
+bridge vlan add dev br10 vid 10 self
+
+# 8) Map VLAN 10 to VNI 1010 on the VXLAN tunnel port
+bridge vlan del dev vxlan10 vid 1
+bridge vlan add dev vxlan10 vid 10
+bridge vlan add dev vxlan10 vid 10 tunnel_info id 1010
+
+# 9) Create an SVI-like VLAN interface on the bridge, if you want an L3 interface for VLAN 10
+ip link add link br10 name vlan10 type vlan id 10
+ip link set dev vlan10 up
+
+# 10) Optional FRR vtysh snippet for EVPN route-target / RD on VNI 1010 - already applied via frr.conf file
+# configure terminal
+# router bgp 65000
+#  address-family l2vpn evpn
+#   neighbor 192.1.2.1 activate
+#   neighbor 192.1.2.2 activate
+#   advertise-all-vni
+#   vni 1010
+#    rd 10:5
+#    route-target import 65000:10
+#    route-target export 65000:10
+#   exit-vni
+#  exit-address-family
+# exit
+# write memory

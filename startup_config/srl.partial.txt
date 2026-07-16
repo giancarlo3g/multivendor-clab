@@ -105,9 +105,9 @@ set / network-instance mac-vrf-10 protocols bgp-evpn bgp-instance 1 admin-state 
 set / network-instance mac-vrf-10 protocols bgp-evpn bgp-instance 1 vxlan-interface vxlan0.10
 set / network-instance mac-vrf-10 protocols bgp-evpn bgp-instance 1 evi 10
 set / network-instance mac-vrf-10 protocols bgp-evpn bgp-instance 1 ecmp 2
-set / network-instance mac-vrf-10 protocols bgp-evpn bgp-instance 1 routes
-set / network-instance mac-vrf-10 protocols bgp-evpn bgp-instance 1 routes bridge-table
-set / network-instance mac-vrf-10 protocols bgp-evpn bgp-instance 1 routes bridge-table vlan-aware-bundle-eth-tag 1010
+# set / network-instance mac-vrf-10 protocols bgp-evpn bgp-instance 1 routes
+# set / network-instance mac-vrf-10 protocols bgp-evpn bgp-instance 1 routes bridge-table
+# set / network-instance mac-vrf-10 protocols bgp-evpn bgp-instance 1 routes bridge-table vlan-aware-bundle-eth-tag 1010
 set / network-instance mac-vrf-10 protocols bgp-vpn
 set / network-instance mac-vrf-10 protocols bgp-vpn bgp-instance 1
 set / network-instance mac-vrf-10 protocols bgp-vpn bgp-instance 1 route-distinguisher

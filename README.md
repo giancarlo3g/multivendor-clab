@@ -101,11 +101,11 @@ A [ContainerLab](https://containerlab.dev/) topology that demonstrates **L2 EVPN
 > ```
 >
 > ```
-> frr# show version
-> FRRouting 8.4_git (frr) on Linux(5.15.0-157-generic).
+> frr# show version 
+> FRRouting 10.8.0-dev_git350585613289 (frr) on Linux(5.15.0-157-generic).
 > Copyright 1996-2005 Kunihiro Ishiguro, et al.
 > configured with:
->     '--prefix=/usr' '--sbindir=/usr/lib/frr' '--sysconfdir=/etc/frr' '--libdir=/usr/lib' '--localstatedir=/var/run/frr' '--enable-rpki' '--enable-vtysh' '--enable-multipath=64' '--enable-vty-group=frrvty' '--enable-user=frr' '--enable-group=frr' '--enable-pcre2posix' 'CC=gcc' 'CXX=g++'
+>     '--prefix=/usr' '--sysconfdir=/etc' '--localstatedir=/var' '--sbindir=/usr/lib/frr' '--libdir=/usr/lib' '--enable-rpki' '--enable-vtysh' '--enable-multipath=64' '--enable-vty-group=frrvty' '--enable-user=frr' '--enable-group=frr' '--enable-pcre2posix' '--enable-scripting' 'CC=cc' 'CXX=c++'
 > ```
 
 ### Links

@@ -17,7 +17,7 @@ topology:
     sonic-vs:
       image: docker-sonic-vs:latest
     sonic-vm:
-      image: sonic_sonic-vs:2026
+      image: vrnetlab/sonic_sonic-vs:26
 
   nodes:
     sros:
@@ -68,8 +68,9 @@ topology:
     sonic:
       kind: sonic-vm
       binds:
-        - ./startup_config/sonic.json:/config/config_db.json
-        - ./startup_config/frr_daemons:/config/frr/daemons
+        # - ./startup_config/sonic.json:/config/config_db.json
+        - ./startup_config/sonic.json:/etc/sonic/config_db.json
+        # - ./startup_config/frr_daemons:/config/frr/daemons
     client-4:
       kind: linux
       exec:
@@ -79,7 +80,7 @@ topology:
         - ip a add 192.168.10.14/24 dev eth1.10
     frr:
       kind: linux
-      image: frr:alpine-51a087ebe9
+      image: quay.io/frrouting/frr:containerlab-10.7.1
       binds:
         - startup_config/frr.conf:/etc/frr/frr.conf
         - startup_config/frr_daemons:/etc/frr/daemons

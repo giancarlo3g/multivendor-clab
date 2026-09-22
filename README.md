@@ -15,98 +15,105 @@ A [ContainerLab](https://containerlab.dev/) topology that demonstrates **L2 EVPN
 | `srl` | Leaf | Nokia SR Linux 25.10.1 | ghcr.io/nokia/srlinux:25.10.1 |
 | `ceos` | Leaf | Arista EOS 4.34.2F | arista_ceos:4.34.2F |
 | `ptx` | Leaf | Juniper cJunos Evolved | juniper_cjunosevolved:25.4R1.13-EVO |
-| `sonic` | Leaf | SONiC (FRR-based control plane) | sonic_sonic-vs:2026 |
-| `frr` | Leaf (FRR router) | FRRouting | frrouting/frr:latest |
+| `sonic` | Leaf | SONiC (FRR-based control plane) | vrnetlab/sonic_sonic-vs:26 |
+| `frr` | Leaf (FRR router) | FRRouting | quay.io/frrouting/frr:containerlab-10.7.1 |
 | `client-{1,2,3,4,5}` | Hosts | Linux | ghcr.io/hellt/network-multitool:latest |
 
-> **Note:** The `sonic_sonic-vs:2026` and `frrouting/frr:latest` image tags don't pin an exact software version — confirm what's actually running with `show version`:
->
-> ```
-> admin@sonic:~$ show version
-> 
-> SONiC Software Version: SONiC.master.1127735-b93b9f586
-> SONiC OS Version: 13
-> Distribution: Debian 13.5
-> Kernel: 6.12.41+deb13-sonic-amd64
-> Build commit: b93b9f586
-> Build date: Mon Jun  1 17:33:27 UTC 2026
-> Built by: azureuser@b509c9bcc000000
-> 
-> Platform: x86_64-kvm_x86_64-r0
-> HwSKU: Force10-S6000
-> ASIC: vs
-> ASIC Count: 1
-> Serial Number: N/A
-> Model Number: N/A
-> Hardware Revision: N/A
-> Uptime: 16:31:52 up 15 min,  2 users,  load average: 0.05, 0.31, 0.60
-> Date: Mon 13 Jul 2026 16:31:52
-> 
-> Docker images:
-> REPOSITORY                    TAG                        IMAGE ID       SIZE
-> docker-sonic-bmp              latest                     324fc00eb8f5   291MB
-> docker-sonic-bmp              master.1127735-b93b9f586   324fc00eb8f5   291MB
-> docker-gnmi-sidecar           latest                     486c45d730c6   290MB
-> docker-gnmi-sidecar           master.1127735-b93b9f586   486c45d730c6   290MB
-> docker-fpm-frr                latest                     501ef6973ea7   392MB
-> docker-fpm-frr                master.1127735-b93b9f586   501ef6973ea7   392MB
-> docker-gnmi-watchdog          latest                     49183a73f12c   295MB
-> docker-gnmi-watchdog          master.1127735-b93b9f586   49183a73f12c   295MB
-> docker-dhcp-relay             latest                     798631ac6c57   332MB
-> docker-dhcp-relay             master.1127735-b93b9f586   798631ac6c57   332MB
-> docker-dash-ha                latest                     af398cdbab81   349MB
-> docker-dash-ha                master.1127735-b93b9f586   af398cdbab81   349MB
-> docker-sonic-otel             latest                     c0276eac6b44   632MB
-> docker-sonic-otel             master.1127735-b93b9f586   c0276eac6b44   632MB
-> docker-platform-monitor       latest                     5c93162dabc1   409MB
-> docker-platform-monitor       master.1127735-b93b9f586   5c93162dabc1   409MB
-> docker-restapi-sidecar        latest                     cc8c0781933d   290MB
-> docker-restapi-sidecar        master.1127735-b93b9f586   cc8c0781933d   290MB
-> docker-router-advertiser      latest                     0f8b4163a879   290MB
-> docker-router-advertiser      master.1127735-b93b9f586   0f8b4163a879   290MB
-> docker-sonic-mgmt-framework   latest                     58a203d4f9aa   353MB
-> docker-sonic-mgmt-framework   master.1127735-b93b9f586   58a203d4f9aa   353MB
-> docker-sysmgr                 latest                     86fbd71c71c8   295MB
-> docker-sysmgr                 master.1127735-b93b9f586   86fbd71c71c8   295MB
-> docker-snmp                   latest                     01a448fd133a   316MB
-> docker-snmp                   master.1127735-b93b9f586   01a448fd133a   316MB
-> docker-dash-engine            latest                     bc16e8cd7a6e   598MB
-> docker-dash-engine            master.1127735-b93b9f586   bc16e8cd7a6e   598MB
-> docker-sflow                  latest                     20d256bfaa5c   330MB
-> docker-sflow                  master.1127735-b93b9f586   20d256bfaa5c   330MB
-> docker-macsec                 latest                     395453c3ed3a   332MB
-> docker-macsec                 master.1127735-b93b9f586   395453c3ed3a   332MB
-> docker-orchagent              latest                     ecb086ff04f4   345MB
-> docker-orchagent              master.1127735-b93b9f586   ecb086ff04f4   345MB
-> docker-eventd                 latest                     45b0c115a4c8   290MB
-> docker-eventd                 master.1127735-b93b9f586   45b0c115a4c8   290MB
-> docker-bmp-watchdog           latest                     b062b0ddff75   288MB
-> docker-bmp-watchdog           master.1127735-b93b9f586   b062b0ddff75   288MB
-> docker-mux                    latest                     96e6fa83a03f   304MB
-> docker-mux                    master.1127735-b93b9f586   96e6fa83a03f   304MB
-> docker-lldp                   latest                     0cccbf0c0890   299MB
-> docker-lldp                   master.1127735-b93b9f586   0cccbf0c0890   299MB
-> docker-teamd                  latest                     908f944f4813   329MB
-> docker-teamd                  master.1127735-b93b9f586   908f944f4813   329MB
-> docker-database               latest                     e05365958bd4   297MB
-> docker-database               master.1127735-b93b9f586   e05365958bd4   297MB
-> docker-nat                    latest                     fa19d5ed6b47   332MB
-> docker-nat                    master.1127735-b93b9f586   fa19d5ed6b47   332MB
-> docker-sonic-gnmi             latest                     88c262596685   436MB
-> docker-sonic-gnmi             master.1127735-b93b9f586   88c262596685   436MB
-> docker-gbsyncd-vs             latest                     204b9b283751   2.19GB
-> docker-gbsyncd-vs             master.1127735-b93b9f586   204b9b283751   2.19GB
-> docker-syncd-vs               latest                     473266185c55   2.19GB
-> docker-syncd-vs               master.1127735-b93b9f586   473266185c55   2.19GB
-> ```
->
-> ```
-> frr# show version 
-> FRRouting 10.8.0-dev_git350585613289 (frr) on Linux(5.15.0-157-generic).
-> Copyright 1996-2005 Kunihiro Ishiguro, et al.
-> configured with:
->     '--prefix=/usr' '--sysconfdir=/etc' '--localstatedir=/var' '--sbindir=/usr/lib/frr' '--libdir=/usr/lib' '--enable-rpki' '--enable-vtysh' '--enable-multipath=64' '--enable-vty-group=frrvty' '--enable-user=frr' '--enable-group=frr' '--enable-pcre2posix' '--enable-scripting' 'CC=cc' 'CXX=c++'
-> ```
+> **Note:** The `vrnetlab/sonic_sonic-vs:26` and `quay.io/frrouting/frr:containerlab-10.7.1` image tags don't pin an exact software version — confirm what's actually running with `show version`:
+
+```
+admin@sonic:~$ show version
+
+SONiC Software Version: SONiC.master.1226279-9ee071bd2
+SONiC OS Version: 13
+Distribution: Debian 13.6
+Kernel: 6.12.41+deb13-sonic-amd64
+Build commit: 9ee071bd2
+Build date: Mon Sep 21 16:49:18 UTC 2026
+Built by: azureuser@41337783c000000
+
+Platform: x86_64-kvm_x86_64-r0
+HwSKU: Force10-S6000
+ASIC: vs
+ASIC Count: 1
+Serial Number: N/A
+Model Number: N/A
+Hardware Revision: N/A
+Uptime: 18:42:22 up 8 min,  2 users,  load average: 0.05, 0.50, 0.45
+Date: Tue 22 Sep 2026 18:42:22
+
+Docker images:
+REPOSITORY                    TAG                        IMAGE ID       SIZE
+docker-snmp                   latest                     0ef5f614df46   331MB
+docker-snmp                   master.1226279-9ee071bd2   0ef5f614df46   331MB
+docker-syncd-vs               latest                     f661ca78e3f9   2.53GB
+docker-syncd-vs               master.1226279-9ee071bd2   f661ca78e3f9   2.53GB
+docker-macsec                 latest                     58b90ea25d52   347MB
+docker-macsec                 master.1226279-9ee071bd2   58b90ea25d52   347MB
+docker-platform-monitor       latest                     8ef85802cd61   425MB
+docker-platform-monitor       master.1226279-9ee071bd2   8ef85802cd61   425MB
+docker-dash-engine            latest                     041afb6576b9   1.34GB
+docker-dash-engine            master.1226279-9ee071bd2   041afb6576b9   1.34GB
+docker-gnmi-sidecar           latest                     c6190b1fd07b   304MB
+docker-gnmi-sidecar           master.1226279-9ee071bd2   c6190b1fd07b   304MB
+docker-sonic-p4rt             latest                     ea6c4d8a37ef   406MB
+docker-sonic-p4rt             master.1226279-9ee071bd2   ea6c4d8a37ef   406MB
+docker-router-advertiser      latest                     1e12ae9c47f8   304MB
+docker-router-advertiser      master.1226279-9ee071bd2   1e12ae9c47f8   304MB
+docker-bmp-watchdog           latest                     2bca986e203f   302MB
+docker-bmp-watchdog           master.1226279-9ee071bd2   2bca986e203f   302MB
+docker-database               latest                     9276b84a8726   311MB
+docker-database               master.1226279-9ee071bd2   9276b84a8726   311MB
+docker-restapi-sidecar        latest                     2f95f56feed3   304MB
+docker-restapi-sidecar        master.1226279-9ee071bd2   2f95f56feed3   304MB
+docker-nat                    latest                     3da8c7d71498   347MB
+docker-nat                    master.1226279-9ee071bd2   3da8c7d71498   347MB
+docker-sflow                  latest                     522ee758a405   346MB
+docker-sflow                  master.1226279-9ee071bd2   522ee758a405   346MB
+docker-fpm-frr                latest                     61a00b31fa22   409MB
+docker-fpm-frr                master.1226279-9ee071bd2   61a00b31fa22   409MB
+docker-sonic-gnmi             latest                     718128c9ee6f   460MB
+docker-sonic-gnmi             master.1226279-9ee071bd2   718128c9ee6f   460MB
+docker-orchagent              latest                     2a96fc9df32e   360MB
+docker-orchagent              master.1226279-9ee071bd2   2a96fc9df32e   360MB
+docker-sonic-bmp              latest                     feed2dd587da   305MB
+docker-sonic-bmp              master.1226279-9ee071bd2   feed2dd587da   305MB
+docker-gnmi-watchdog          latest                     084b5074f263   309MB
+docker-gnmi-watchdog          master.1226279-9ee071bd2   084b5074f263   309MB
+docker-dhcp-relay             latest                     c49c0898b00d   346MB
+docker-dhcp-relay             master.1226279-9ee071bd2   c49c0898b00d   346MB
+docker-dash-ha                latest                     4313f4ff3435   364MB
+docker-dash-ha                master.1226279-9ee071bd2   4313f4ff3435   364MB
+docker-sonic-otel             latest                     df1c63c7303c   646MB
+docker-sonic-otel             master.1226279-9ee071bd2   df1c63c7303c   646MB
+docker-eventd                 latest                     ab21177f7897   304MB
+docker-eventd                 master.1226279-9ee071bd2   ab21177f7897   304MB
+docker-mux                    latest                     ad9f940f1ba4   318MB
+docker-mux                    master.1226279-9ee071bd2   ad9f940f1ba4   318MB
+docker-gbsyncd-vs             latest                     c251116f2fd1   2.53GB
+docker-gbsyncd-vs             master.1226279-9ee071bd2   c251116f2fd1   2.53GB
+docker-sysmgr                 latest                     2214b22c63f3   309MB
+docker-sysmgr                 master.1226279-9ee071bd2   2214b22c63f3   309MB
+docker-sonic-mgmt-framework   latest                     5fd1a452b39c   369MB
+docker-sonic-mgmt-framework   master.1226279-9ee071bd2   5fd1a452b39c   369MB
+docker-teamd                  latest                     affa71bdd8cc   344MB
+docker-teamd                  master.1226279-9ee071bd2   affa71bdd8cc   344MB
+docker-lldp                   latest                     1574ee97f985   313MB
+docker-lldp                   master.1226279-9ee071bd2   1574ee97f985   313MB
+```
+
+```
+admin@sonic:~$ vtysh
+
+Hello, this is FRRouting (version 10.5.4).
+Copyright 1996-2005 Kunihiro Ishiguro, et al.
+
+sonic# show version
+FRRouting 10.5.4 (sonic) on Linux(6.12.41+deb13-sonic-amd64).
+Copyright 1996-2005 Kunihiro Ishiguro, et al.
+configured with:
+    '--build=x86_64-linux-gnu' '--prefix=/usr' '--includedir=${prefix}/include' '--mandir=${prefix}/share/man' '--infodir=${prefix}/share/info' '--sysconfdir=/etc' '--localstatedir=/var' '--disable-option-checking' '--disable-silent-rules' '--libdir=${prefix}/lib/x86_64-linux-gnu' '--libexecdir=${prefix}/lib/x86_64-linux-gnu' '--disable-maintainer-mode' '--sbindir=/usr/lib/frr' '--with-vtysh-pager=/usr/bin/pager' '--libdir=/usr/lib/x86_64-linux-gnu/frr' '--with-moduledir=/usr/lib/x86_64-linux-gnu/frr/modules' '--disable-dependency-tracking' '--disable-rpki' '--disable-scripting' '--enable-pim6d' '--disable-grpc' '--disable-address-sanitizer' '--enable-gperf-tcmalloc' '--with-libpam' '--enable-doc' '--enable-doc-html' '--enable-snmp' '--enable-fpm' '--enable-sharpd' '--disable-protobuf' '--disable-zeromq' '--enable-ospfapi' '--enable-multipath=514' '--enable-pcre2posix' '--enable-user=frr' '--enable-group=frr' '--enable-vty-group=frrvty' '--enable-configfile-mask=0640' '--enable-logfile-mask=0640' 'build_alias=x86_64-linux-gnu' 'PYTHON=python3'
+```
 
 ### Links
 
@@ -182,8 +189,8 @@ Clients are configured with a VLAN 10 sub-interface and assigned addresses in `1
   - `nokia_srsim:25.10.R2`
   - `arista_ceos:4.34.2F`
   - `juniper_cjunosevolved:25.4R1.13-EVO`
-  - `docker-sonic-vs:latest` / `sonic_sonic-vs:2026` — download from [sonic.software](https://sonic.software/). SONiC-VS is a bare Docker image, not a container-network-node image, so it must be wrapped with [vrnetlab](https://github.com/hellt/vrnetlab) (the `sonic-vm`/`sonic-vs` builder) before ContainerLab can boot it as a node.
-  - `frrouting/frr:latest` — download from [frrouting.org/release](https://frrouting.org/release/), or pull directly from Docker Hub.
+  - `vrnetlab/sonic_sonic-vs:26` — download master sonic-vs.img.gz from [sonic.software](https://sonic.software/). SONiC-VS is a VM image, not a container image, so it must be wrapped with [vrnetlab](https://github.com/hellt/vrnetlab) (the `sonic-vm`/`sonic-vs` builder) before ContainerLab can boot it as a node. Build image used for this test was [SONiC.master.1226279](https://dev.azure.com/mssonic/build/_build/results?buildId=1226279&view=results).
+  - `quay.io/frrouting/frr:containerlab-10.7.1` — download from [frrouting.org/release](https://frrouting.org/release/), or pull directly from repo `quay.io/frrouting/frr:containerlab-10.7.1`.
 
 ## Deploying the lab
 
@@ -242,7 +249,7 @@ commit
 | mv-srl | 172.20.20.35 | admin / NokiaSrl1! |
 | mv-ceos | 172.20.20.7 | admin / admin |
 | mv-ptx | 172.20.20.8 | admin / admin@123 |
-| mv-sonic | 172.20.20.17 | admin / admin |
+| mv-sonic | 172.20.20.17 | admin / YourPaSsWoRd |
 | mv-frr | — (shell access only, see below) | — |
 
 > **Note:** Management IPs are assigned by ContainerLab and may differ between deployments. Always verify with `clab inspect`.

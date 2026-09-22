@@ -24,6 +24,20 @@ sudo config interface mtu Ethernet4 9172
 sudo config interface ip add Loopback0 192.1.1.4/32 2>/dev/null || true
 REMOTE_EOF
 
+echo ">>> Configuring VXLAN/VLAN dataplane on ${NODE}"
+ssh "${NODE}" bash -s << 'REMOTE_EOF'
+set -e
+# Ethernet8 ships with a stray L3 IP from sonic-vs's default T2 template;
+# it must be removed before the port can join a VLAN as an L2 member.
+sudo config interface ip remove Ethernet8 10.0.0.4/31 2>/dev/null || true
+sudo config vxlan add vtep1 192.1.1.4 2>/dev/null || true
+sudo config vxlan evpn_nvo add nvo1 vtep1 2>/dev/null || true
+sudo config vlan add 10 2>/dev/null || true
+sudo config vxlan map add vtep1 10 1010 2>/dev/null || true
+sudo config vlan member add 10 Ethernet8 2>/dev/null || true
+sudo config save -y
+REMOTE_EOF
+
 echo ">>> Enabling ospfd in FRR container on ${NODE}"
 ssh "${NODE}" bash -s << 'REMOTE_EOF'
 set -e
@@ -90,6 +104,11 @@ address-family l2vpn evpn
 neighbor 192.1.2.1 activate
 neighbor 192.1.2.2 activate
 advertise-all-vni
+vni 1010
+rd 10:4
+route-target import 65000:10
+route-target export 65000:10
+exit-vni
 exit
 exit
 exit
@@ -99,5 +118,8 @@ REMOTE_EOF
 
 echo ">>> Verifying BGP neighbor state on ${NODE}"
 ssh "${NODE}" "docker exec bgp vtysh -c 'show bgp summary'"
+
+echo ">>> Verifying VXLAN/EVPN state on ${NODE}"
+ssh "${NODE}" "sudo config vxlan list; docker exec bgp vtysh -c 'show bgp l2vpn evpn vni'"
 
 echo ">>> Done with ${NODE}"

@@ -17,7 +17,8 @@ A [ContainerLab](https://containerlab.dev/) topology that demonstrates **L2 EVPN
 | `ptx` | Leaf | Juniper cJunos Evolved | juniper_cjunosevolved:25.4R1.13-EVO |
 | `sonic` | Leaf | SONiC (FRR-based control plane) | vrnetlab/sonic_sonic-vs:26 |
 | `frr` | Leaf (FRR router) | FRRouting | quay.io/frrouting/frr:containerlab-10.7.1 |
-| `client-{1,2,3,4,5}` | Hosts | Linux | ghcr.io/hellt/network-multitool:latest |
+| `nexus` | Leaf | Cisco NX-OS 10.6.3F (Nexus 9000v) | cisco_n9kv:9300-10.6.3F |
+| `client-{1,2,3,4,5,6}` | Hosts | Linux | ghcr.io/hellt/network-multitool:latest |
 
 > **Note:** The `vrnetlab/sonic_sonic-vs:26` and `quay.io/frrouting/frr:containerlab-10.7.1` image tags don't pin an exact software version — confirm what's actually running with `show version`:
 
@@ -136,6 +137,9 @@ Each leaf has a full-mesh uplink to both spines. Clients connect to their respec
 | ptx-gw → frr | eth8 | eth2 |
 | sonic → client-4 | eth3 | eth1 |
 | frr → client-5 | eth3 | eth1 |
+| sros → nexus | 1/1/c6/1 | eth2 |
+| ptx-gw → nexus | eth9 | eth3 |
+| nexus → client-6 | eth1 | eth1 |
 
 ## Protocols
 
@@ -152,6 +156,7 @@ All fabric interfaces (dot1q VLAN 1) and loopbacks run **OSPFv2 area 0**, point-
 | ptx | 192.1.1.3/32 |
 | sonic | 192.1.1.4/32 |
 | frr | 192.1.1.5/32 |
+| nexus | 192.1.1.6/32 |
 
 ### Overlay — BGP EVPN / VXLAN
 
@@ -179,6 +184,7 @@ Clients are configured with a VLAN 10 sub-interface and assigned addresses in `1
 | client-3 | 10 | 192.168.10.13/24 | 00:c1:ab:00:00:03 |
 | client-4 | 10 | 192.168.10.14/24 | 00:c1:ab:00:00:04 |
 | client-5 | 10 | 192.168.10.15/24 | 00:c1:ab:00:00:05 |
+| client-6 | 10 | 192.168.10.16/24 | 00:c1:ab:00:00:06 |
 
 ## Requirements
 
@@ -214,13 +220,20 @@ A few nodes are **not** fully configured by ContainerLab's `startup-config` mech
 
 ### SONiC (`mv-sonic`)
 
-The `sonic-vm` kind only loads `config_db.json` on boot — interfaces, OSPF, and BGP/EVPN on the internal FRR control plane still need to be wired up. Run `startup_config/post-deploy-sonic.sh` once against the node's SSH target to inject an SSH key, configure interface IPs/MTUs, enable `ospfd`, and apply OSPF + BGP EVPN config via `vtysh`:
+The `sonic-vm` kind only loads `config_db.json` on boot — interfaces, OSPF, and BGP/EVPN on the internal FRR control plane still need to be wired up. Run `startup_config/post-deploy-sonic.sh` against the node's SSH target to inject an SSH key, configure interface IPs/MTUs, the VXLAN/VLAN dataplane, enable `ospfd`, and apply OSPF + BGP EVPN config via `vtysh`.
+
+> **Important:** the script currently has to be run **twice** after a fresh deploy. On the first run, OSPF and BGP come up but the VXLAN/VLAN dataplane (VLAN 10, `vtep1`, VNI 1010 map) is not created, so SONiC doesn't advertise any EVPN routes for the VNI. The second run creates it and the EVPN routes are announced.
 
 ```bash
 ./startup_config/post-deploy-sonic.sh mv-sonic
+./startup_config/post-deploy-sonic.sh mv-sonic
 ```
 
-The script is idempotent — safe to re-run against a node that's already configured.
+The script is idempotent — safe to re-run against a node that's already configured. To confirm SONiC is announcing its EVPN routes, check that its own IMET route (`[3]:[0]:[32]:[192.1.1.4]`) is present:
+
+```bash
+ssh admin@mv-sonic "docker exec bgp vtysh -c 'show bgp l2vpn evpn route type multicast'"
+```
 
 ### Juniper cJunos Evolved (`mv-ptx-gw` and `mv-ptx`)
 
@@ -251,6 +264,7 @@ commit
 | mv-ptx | 172.20.20.8 | admin / admin@123 |
 | mv-sonic | 172.20.20.17 | admin / YourPaSsWoRd |
 | mv-frr | — (shell access only, see below) | — |
+| mv-nexus | 172.20.20.7 | admin / admin |
 
 > **Note:** Management IPs are assigned by ContainerLab and may differ between deployments. Always verify with `clab inspect`.
 

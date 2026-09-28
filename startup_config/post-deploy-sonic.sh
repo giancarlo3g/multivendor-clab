@@ -98,6 +98,7 @@ vtysh << 'VTYSH_EOF'
 configure
 no router bgp 65100
 router bgp 65000
+bgp router-id 192.1.1.4
 neighbor 192.1.2.1 remote-as 65000
 neighbor 192.1.2.2 remote-as 65000
 address-family l2vpn evpn

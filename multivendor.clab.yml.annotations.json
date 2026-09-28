@@ -8,11 +8,12 @@
     {
       "id": "ptx-gw",
       "position": {
-        "x": 520,
+        "x": 580,
         "y": 300
       },
-      "icon": "router",
-      "interfacePattern": "e1-{n}"
+      "icon": "pe",
+      "interfacePattern": "e1-{n}",
+      "labelPosition": "top"
     },
     {
       "id": "frr",
@@ -26,7 +27,7 @@
     {
       "id": "sros",
       "position": {
-        "x": 360,
+        "x": 460,
         "y": 300
       },
       "icon": "pe",
@@ -34,24 +35,27 @@
       "geoCoordinates": {
         "lat": 48.775846,
         "lng": 9.182932
-      }
+      },
+      "labelPosition": "top"
     },
     {
-      "id": "vmx",
+      "id": "nexus",
       "position": {
-        "x": 360,
-        "y": 280
+        "x": 800,
+        "y": 500
       },
       "icon": "pe",
       "geoCoordinates": {
         "lat": 50.110924,
         "lng": 8.682127
-      }
+      },
+      "labelPosition": "top",
+      "iconCornerRadius": 0
     },
     {
       "id": "srl",
       "position": {
-        "x": 200,
+        "x": 220,
         "y": 500
       },
       "icon": "switch",
@@ -59,7 +63,8 @@
       "geoCoordinates": {
         "lat": 48.856613,
         "lng": 2.352222
-      }
+      },
+      "labelPosition": "top"
     },
     {
       "id": "ceos",
@@ -88,7 +93,7 @@
     {
       "id": "client-1",
       "position": {
-        "x": 200,
+        "x": 220,
         "y": 620
       },
       "icon": "client",
@@ -143,6 +148,14 @@
       "id": "client-5",
       "position": {
         "x": 680,
+        "y": 620
+      },
+      "icon": "client"
+    },
+    {
+      "id": "client-6",
+      "position": {
+        "x": 800,
         "y": 620
       },
       "icon": "client"

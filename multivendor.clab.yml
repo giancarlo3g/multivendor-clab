@@ -20,6 +20,8 @@ topology:
       image: vrnetlab/sonic_sonic-vs:26
     cisco_n9kv:
       image: cisco_n9kv:9300-10.6.3F
+    nvidia_cumulusvx:
+      image: nvidia_cumulusvx:5.16.1-hotplug
 
   nodes:
     sros:
@@ -120,6 +122,17 @@ topology:
         - ip link set dev eth1.10 up
         - ip link set eth1.10 address 00:c1:ab:0:00:06
         - ip a add 192.168.10.16/24 dev eth1.10
+    nvidia:
+      kind: nvidia_cumulusvx
+      group: leaf
+      # startup-config: ./startup_config/nvidia_startup.cfg  # ignored by the image; use post-deploy-nvidia.sh
+    client-7:
+      kind: linux
+      exec:
+        - ip link add link eth1 name eth1.10 type vlan id 10
+        - ip link set dev eth1.10 up
+        - ip link set eth1.10 address 00:c1:ab:0:00:07
+        - ip a add 192.168.10.17/24 dev eth1.10
 
   links:
     ##CLOS fabric
@@ -139,6 +152,9 @@ topology:
     - endpoints: [ "nexus:eth2", "sros:1/1/c6/1" ]
     - endpoints: [ "nexus:eth3", "ptx-gw:eth9" ]
     - endpoints: [ "client-6:eth1", "nexus:eth1" ]
+    - endpoints: [ "nvidia:swp2", "sros:1/2/c1/1" ]
+    - endpoints: [ "nvidia:swp3", "ptx-gw:eth10" ]
+    - endpoints: [ "client-7:eth1", "nvidia:swp1" ]
     - type: veth
       endpoints:
         - node: frr

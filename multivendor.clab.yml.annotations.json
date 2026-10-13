@@ -8,7 +8,7 @@
     {
       "id": "ptx-gw",
       "position": {
-        "x": 580,
+        "x": 640,
         "y": 300
       },
       "icon": "pe",
@@ -27,7 +27,7 @@
     {
       "id": "sros",
       "position": {
-        "x": 460,
+        "x": 520,
         "y": 300
       },
       "icon": "pe",
@@ -159,6 +159,23 @@
         "y": 620
       },
       "icon": "client"
+    },
+    {
+      "id": "client-7",
+      "position": {
+        "x": 920,
+        "y": 620
+      },
+      "icon": "client"
+    },
+    {
+      "id": "nvidia",
+      "position": {
+        "x": 920,
+        "y": 500
+      },
+      "labelPosition": "top",
+      "icon": "pe"
     }
   ],
   "edgeAnnotations": [],

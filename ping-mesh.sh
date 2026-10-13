@@ -5,7 +5,7 @@
 # Usage: ./ping-mesh.sh [count]    (default count: 3)
 
 COUNT="${1:-3}"
-CLIENTS=(1 2 3 4 5 6)
+CLIENTS=(1 2 3 4 5 6 7)
 PREFIX="192.168.10.1"
 
 pass=0

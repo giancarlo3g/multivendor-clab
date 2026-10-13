@@ -1,6 +1,6 @@
 # Multivendor EVPN/VXLAN Lab
 
-A [ContainerLab](https://containerlab.dev/) topology that demonstrates **L2 EVPN/VXLAN interoperability** across four different network operating systems in a 2-tier CLOS fabric.
+A [ContainerLab](https://containerlab.dev/) topology that demonstrates **L2 EVPN/VXLAN interoperability** across eight different network operating systems (Nokia SR Linux, Nokia SROS, Arista EOS, Juniper cJunos Evolved, SONiC, FRRouting, Cisco NX-OS and NVIDIA Cumulus Linux) in a 2-tier CLOS fabric.
 
 ## Topology
 
@@ -18,7 +18,8 @@ A [ContainerLab](https://containerlab.dev/) topology that demonstrates **L2 EVPN
 | `sonic` | Leaf | SONiC (FRR-based control plane) | vrnetlab/sonic_sonic-vs:26 |
 | `frr` | Leaf (FRR router) | FRRouting | quay.io/frrouting/frr:containerlab-10.7.1 |
 | `nexus` | Leaf | Cisco NX-OS 10.6.3F (Nexus 9000v) | cisco_n9kv:9300-10.6.3F |
-| `client-{1,2,3,4,5,6}` | Hosts | Linux | ghcr.io/hellt/network-multitool:latest |
+| `nvidia` | Leaf | NVIDIA Cumulus Linux 5.16 (Cumulus VX) | nvidia_cumulusvx:5.16.1-hotplug |
+| `client-{1,2,3,4,5,6,7}` | Hosts | Linux | ghcr.io/hellt/network-multitool:latest |
 
 > **Note:** The `vrnetlab/sonic_sonic-vs:26` and `quay.io/frrouting/frr:containerlab-10.7.1` image tags don't pin an exact software version — confirm what's actually running with `show version`:
 
@@ -140,12 +141,15 @@ Each leaf has a full-mesh uplink to both spines. Clients connect to their respec
 | sros → nexus | 1/1/c6/1 | eth2 |
 | ptx-gw → nexus | eth9 | eth3 |
 | nexus → client-6 | eth1 | eth1 |
+| sros → nvidia | 1/2/c1/1 | swp2 |
+| ptx-gw → nvidia | eth10 | swp3 |
+| nvidia → client-7 | swp1 | eth1 |
 
 ## Protocols
 
 ### Underlay — OSPF
 
-All fabric interfaces (dot1q VLAN 1) and loopbacks run **OSPFv2 area 0**, point-to-point. MTU is set to 9194 / 9172 bytes on fabric links.
+All fabric interfaces (dot1q VLAN 1) and loopbacks run **OSPFv2 area 0**, point-to-point. MTU is set to 9194 / 9172 bytes on fabric links. The links to `sonic`, `frr`, `nexus` and `nvidia` are untagged (SROS `encap-type null`, Junos unit 0) with a 9172-byte IP/OSPF MTU.
 
 | Node | Loopback / System IP |
 |------|---------------------|
@@ -157,6 +161,7 @@ All fabric interfaces (dot1q VLAN 1) and loopbacks run **OSPFv2 area 0**, point-
 | sonic | 192.1.1.4/32 |
 | frr | 192.1.1.5/32 |
 | nexus | 192.1.1.6/32 |
+| nvidia | 192.1.1.7/32 |
 
 ### Overlay — BGP EVPN / VXLAN
 
@@ -170,6 +175,8 @@ All fabric interfaces (dot1q VLAN 1) and loopbacks run **OSPFv2 area 0**, point-
 | EVI | 10 |
 | Route-target | `target:65000:10` |
 | EVPN eth-tag | 1010 |
+
+`frr`, `sonic`, `nexus` and `nvidia` don't support VLAN-aware bundle; they run VLAN-based EVPN (eth-tag 0) with the same route-target `65000:10` and an RD of `10:<leaf#>` (e.g. `10:7` on `nvidia`), and interoperate with the VLAN-aware-bundle leaves.
 
 All leaf VTEP IPs are their loopback addresses. EVPN type-2 (MAC/IP) and type-3 (IMET) routes are exchanged via iBGP.
 
@@ -185,6 +192,7 @@ Clients are configured with a VLAN 10 sub-interface and assigned addresses in `1
 | client-4 | 10 | 192.168.10.14/24 | 00:c1:ab:00:00:04 |
 | client-5 | 10 | 192.168.10.15/24 | 00:c1:ab:00:00:05 |
 | client-6 | 10 | 192.168.10.16/24 | 00:c1:ab:00:00:06 |
+| client-7 | 10 | 192.168.10.17/24 | 00:c1:ab:00:00:07 |
 
 ## Requirements
 
@@ -197,6 +205,12 @@ Clients are configured with a VLAN 10 sub-interface and assigned addresses in `1
   - `juniper_cjunosevolved:25.4R1.13-EVO`
   - `vrnetlab/sonic_sonic-vs:26` — download master sonic-vs.img.gz from [sonic.software](https://sonic.software/). SONiC-VS is a VM image, not a container image, so it must be wrapped with [vrnetlab](https://github.com/hellt/vrnetlab) (the `sonic-vm`/`sonic-vs` builder) before ContainerLab can boot it as a node. Build image used for this test was [SONiC.master.1226279](https://dev.azure.com/mssonic/build/_build/results?buildId=1226279&view=results).
   - `quay.io/frrouting/frr:containerlab-10.7.1` — download from [frrouting.org/release](https://frrouting.org/release/), or pull directly from repo `quay.io/frrouting/frr:containerlab-10.7.1`.
+  - `cisco_n9kv:9300-10.6.3F` — Nexus 9000v VM image wrapped with [vrnetlab](https://github.com/hellt/vrnetlab).
+  - `nvidia_cumulusvx:5.16.1-hotplug` — pulled from `registry.srlinux.dev/pub/nvidia_cumulusvx:5.16.1-hotplug` and retagged:
+    ```bash
+    docker pull registry.srlinux.dev/pub/nvidia_cumulusvx:5.16.1-hotplug
+    docker tag registry.srlinux.dev/pub/nvidia_cumulusvx:5.16.1-hotplug nvidia_cumulusvx:5.16.1-hotplug
+    ```
 
 ## Deploying the lab
 
@@ -253,18 +267,37 @@ configure
 commit
 ```
 
+### NVIDIA Cumulus VX (`mv-nvidia`)
+
+The `nvidia_cumulusvx` image ignores ContainerLab's `startup-config`: the file is mounted at `/config/startup-config.cfg`, but the image's boot tooling (boxen) has no step that sends it to the switch, so the node comes up with factory defaults. The `startup-config` entry is therefore commented out in `multivendor.clab.yml`, and `startup_config/post-deploy-nvidia.sh` pushes `startup_config/nvidia_startup.cfg` (NVUE `nv set` commands) over SSH instead:
+
+```bash
+./startup_config/post-deploy-nvidia.sh mv-nvidia
+```
+
+The script waits until NVUE is ready, stages the `nv set` commands, applies and saves them in a separate session, then shows OSPF neighbors, BGP neighbors and EVPN VNI 1010. It logs in with the password through a temporary `SSH_ASKPASS` helper (no `sshpass` needed); override the login with `NVIDIA_USER` / `NVIDIA_PASSWORD`. It is idempotent: on an already-configured node it discards the empty revision and reports "No changes, already configured".
+
+### Cisco Nexus 9000v (`mv-nexus`) — first boot
+
+`nexus` is configured from its `startup-config`, but the first boot of the Nexus 9000v VM takes several minutes (about 6 min to "Startup complete", longer under load) and the container reports `unhealthy` until it finishes. **Don't restart the container during this time.** The VM disk lives inside the container, and each restart layers a new overlay on top of the half-written one; an interrupted first boot leaves a disk that drops to the `loader >` prompt on every later boot. If that happens, recreate the node with a redeploy (`--reconfigure`). Follow the boot with:
+
+```bash
+docker logs -f mv-nexus    # wait for "Startup complete"
+```
+
 ## Accessing nodes
 
 | Node | Management IP | Credentials |
 |------|--------------|-------------|
-| mv-sros | 172.20.20.34 | admin / NokiaSros1! |
-| mv-ptx-gw | 172.20.20.10 | admin / admin@123 |
-| mv-srl | 172.20.20.35 | admin / NokiaSrl1! |
-| mv-ceos | 172.20.20.7 | admin / admin |
+| mv-sros | 172.20.20.17 | admin / NokiaSros1! |
+| mv-ptx-gw | 172.20.20.3 | admin / admin@123 |
+| mv-srl | 172.20.20.18 | admin / NokiaSrl1! |
+| mv-ceos | 172.20.20.4 | admin / admin |
 | mv-ptx | 172.20.20.8 | admin / admin@123 |
-| mv-sonic | 172.20.20.17 | admin / YourPaSsWoRd |
+| mv-sonic | 172.20.20.6 | admin / YourPaSsWoRd |
 | mv-frr | — (shell access only, see below) | — |
-| mv-nexus | 172.20.20.7 | admin / admin |
+| mv-nexus | 172.20.20.9 | admin / admin |
+| mv-nvidia | 172.20.20.10 | cumulus / Clab123! |
 
 > **Note:** Management IPs are assigned by ContainerLab and may differ between deployments. Always verify with `clab inspect`.
 
@@ -282,6 +315,10 @@ vtysh
 # FRR — no SSH; get a shell via Docker, then vtysh for routing config
 docker exec -it mv-frr sh
 vtysh
+
+# NVIDIA Cumulus — log in as cumulus, use NVUE (nv show / nv set); sudo vtysh for FRR
+ssh cumulus@mv-nvidia
+nv show vrf default router bgp neighbor
 ```
 
 ## Verifying the lab

@@ -456,3 +456,7 @@ ContainerLab auto-generates two inventory files on deploy inside `clab-mv/`:
 
 - `clab-mv/ansible-inventory.yml` — grouped by NOS, connection type pre-configured
 - `clab-mv/nornir-simple-inventory.yml` — Nornir SimpleInventory format
+
+## License
+
+This lab's configs and scripts are released under the [MIT License](LICENSE). Vendor images and licenses (Nokia, Arista, Juniper, Cisco, NVIDIA, SONiC) aren't included and are covered by their own terms.
